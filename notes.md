@@ -72,3 +72,10 @@ source $HOME/.cargo/env
 - https://developers.cloudflare.com/workers/cli-wrangler/authentication
 - `wrangler login`
 - `npm run deploy`
+
+## Local dev
+- `npm run dev` runs the remix dev server
+- `npm start` runs the miniflare worker server
+- `npm i concurrently` to run both with one command
+- use concurrently to connect commands `"dev": "concurrently \"npm run start\" \"remix watch\""`
+- add `/.mf` to `.gitignore` to not doxx yourself
