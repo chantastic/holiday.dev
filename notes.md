@@ -69,13 +69,78 @@ source $HOME/.cargo/env
 - if i need to update wrangler later
 
 ## Collecting app to to workers with wrangler
+
 - https://developers.cloudflare.com/workers/cli-wrangler/authentication
 - `wrangler login`
 - `npm run deploy`
 
 ## Local dev
+
 - `npm run dev` runs the remix dev server
 - `npm start` runs the miniflare worker server
 - `npm i concurrently` to run both with one command
 - use concurrently to connect commands `"dev": "concurrently \"npm run start\" \"remix watch\""`
 - add `/.mf` to `.gitignore` to not doxx yourself
+
+## Getting to data
+
+- Set up the `useLoaderData` hook
+
+```tsx
+import { useLoaderData } from "remix";
+
+export const loader = () => {
+  return fetch(`https://api.convertkit.com/v3/sequences?api_key=
+  `);
+};
+
+export default function Index() {
+  let sequences = useLoaderData();
+  console.log(sequences);
+  // …
+  return {};
+}
+```
+
+- the loader can just return a fetch, which is cool.
+- add types for data
+
+```tsx
+type Course = {
+  id: number;
+  name: string;
+  hold: boolean;
+  repeat: boolean;
+  created_at: string;
+};
+
+type Sequences = {
+  courses: Course[];
+};
+
+let sequences: Sequences = useLoaderData();
+
+// {sequences.courses.map((sequence: Course) => (
+//   <li key={sequence.id}>{sequence.name}</li>
+```
+
+- Add secret via wrangler cli
+
+`wrangler sectret put CONVERTKIT_API_KEY`
+
+- then it prompts for the value
+
+- https://blog.cloudflare.com/workers-secrets-environment/
+- https://developers.cloudflare.com/workers/platform/environment-variables
+- https://developers.cloudflare.com/workers/platform/environment-variables#adding-secrets-via-wrangler
+
+- add secret keys to `wrangler.toml`
+```
+# [secrets]
+# CONVERTKIT_API_KEY
+```
+
+- wrangler secrets are not available to remix server
+- miniflare has support for `.env` files thru the cli
+  - i set it up thru the node script but there are alternatives: https://miniflare.dev/variables-secrets.html#env-files
+- add `.env.local` to `.gitignore`
