@@ -28,7 +28,9 @@ export default function Index() {
       </h1>
       <ul>
         {sequences.courses.map((sequence: Course) => (
-          <li key={sequence.id}>{sequence.name}</li>
+          <li key={sequence.id} id={sequence.id.toString()}>
+            <a href={`/admin/sequences/${sequence.id}`}>{sequence.name}</a>
+          </li>
         ))}
       </ul>
     </div>
